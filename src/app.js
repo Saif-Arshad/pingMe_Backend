@@ -7,6 +7,7 @@ const { connectToDatabase } = require("../config/database");
 const port = 3000;
 const app = express();
 const server = http.createServer(app);
+const routes = require("./routes");
 
 // make a new instance of Server and pass in the http server instance 
 // And also CORS options
@@ -14,7 +15,7 @@ const server = http.createServer(app);
     connectToDatabase()
     const io = new Server(server, {
         cors: {
-            origin: "http://localhost:5173",
+            origin: process.env.FRONTEND_URL,
             // methods: ["GET", "POST"]
         }
     });
@@ -46,7 +47,11 @@ const server = http.createServer(app);
         });
     });
 
+    app.use("/api", routes);
 
+    app.use((req, res) => {
+        return res.status(404).send({ error: "Route not found" });
+    });
     server.listen(port, () => {
         console.log(`Server is running on http://localhost:${port}`);
     });
