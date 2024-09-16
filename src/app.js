@@ -13,6 +13,12 @@ const routes = require("./routes");
 // And also CORS options
 (async () => {
     connectToDatabase()
+    const allowedOrigins = "*";
+    const corsOptionsAll = {
+        optionsSuccessStatus: 202,
+        origin: allowedOrigins,
+        credentials: true,
+    };
     const io = new Server(server, {
         cors: {
             origin: process.env.FRONTEND_URL,
@@ -22,7 +28,7 @@ const routes = require("./routes");
 
 
     app.use(express.json());
-
+    app.use(cors(corsOptionsAll));
     // When a client establishes a connection with the server, 
     // this event listener will be triggered.
     io.on('connection', (socket) => {

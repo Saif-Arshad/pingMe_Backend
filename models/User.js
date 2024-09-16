@@ -31,5 +31,19 @@ const UserSchema = new mongoose.Schema({
         default: Date.now
     }
 });
-const User = mongoose.model('User', UserSchema);
-module.exports = User;
+const userTokenSchema = new mongoose.Schema(
+    {
+        token: {
+            type: String,
+            required: true,
+        },
+    },
+    {
+        timestamps: true, // This will add `createdAt` and `updatedAt` fields automatically
+    }
+);
+
+const User = mongoose.model("User", UserSchema);
+const UserToken = mongoose.model("UserToken", userTokenSchema);
+module.exports = { User, UserToken };
+
