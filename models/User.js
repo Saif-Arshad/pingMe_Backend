@@ -39,7 +39,7 @@ const userTokenSchema = new mongoose.Schema(
         },
     },
     {
-        timestamps: true, // This will add `createdAt` and `updatedAt` fields automatically
+        timestamps: true, 
     }
 );
 
