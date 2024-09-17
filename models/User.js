@@ -7,12 +7,28 @@ const UserSchema = new mongoose.Schema({
         unique: true,
         trim: true
     },
+    profileName: {
+        type: String,
+        required: false,
+    },
+    searchHistory: {
+        type: Array,
+        default: []
+    },
     email: {
         type: String,
         required: true,
         unique: true,
         trim: true,
         lowercase: true
+    },
+    profileImage: {
+        type: String,
+        required: false,
+    },
+    blockList: {
+        type: Array,
+        default: []
     },
     roomHistory: {
         type: Array,
@@ -39,7 +55,7 @@ const userTokenSchema = new mongoose.Schema(
         },
     },
     {
-        timestamps: true, 
+        timestamps: true,
     }
 );
 
