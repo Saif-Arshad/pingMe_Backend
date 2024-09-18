@@ -6,9 +6,9 @@ module.exports = {
                 message: "OK",
                 timestamp: Date.now(),
             };
-            res.success(healthCheck);
+            res.status(200).json(healthCheck);
         } catch (err) {
-            res.error(err);
+            res.status(500).json({ error: err.message });
         }
     },
     getVersion: async (req, res) => {
@@ -16,9 +16,9 @@ module.exports = {
             const versionCheck = {
                 version: process.version,
             };
-            res.success(versionCheck);
+            res.status(200).json(versionCheck);
         } catch (err) {
-            res.error(err);
+            res.status(500).json({ error: err.message });
         }
     },
     getEnvironment: async (req, res) => {
@@ -26,10 +26,9 @@ module.exports = {
             const environmentCheck = {
                 environment: process.env.NODE_ENV,
             };
-            res.success(environmentCheck);
+            res.status(200).json(environmentCheck);
         } catch (err) {
-            res.error(err);
+            res.status(500).json({ error: err.message });
         }
     },
 };
-
