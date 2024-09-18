@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 // Import Server from 'socket.io';
 const { Server } = require("socket.io");
+const router = express.Router();
 const cors = require('cors');
 const { connectToDatabase } = require("../config/database");
 const port = 3000;
@@ -54,7 +55,9 @@ const routes = require("./routes");
     });
 
     app.use("/api", routes);
-
+    router.get("/", (req, res) => {
+        res.send("Hello World")
+    });
     app.use((req, res) => {
         return res.status(404).send({ error: "Route not found" });
     });
