@@ -40,7 +40,7 @@ const verifyUserToken = async (req, res, next) => {
             return res.error({ status: 401, message: "Expired token" });
         }
 
-        return res.erorr({ status: 500, message: error.message });
+        return res.erorr({ status: 500, message: "Please provide token" });
     }
 };
 

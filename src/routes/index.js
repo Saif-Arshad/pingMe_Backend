@@ -7,6 +7,8 @@ const aiRouter = require("./ai.routes");
 router.use("/users", userRouter);
 router.use("/me", meRouter)
 router.use("/ai", verifyUserToken, aiRouter);
-
+router.get("/", (req, res) => {
+    res.send("Hello World")
+});
 module.exports = router;
 
