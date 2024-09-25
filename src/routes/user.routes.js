@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { createUser, loginUser, checkUserName } = require("../controllers/user.controller");
-
+const { verifyUserToken } = require("../middlewares/jwt")
+const { createUser, loginUser, checkUserName, signAdminOut } = require("../controllers/user.controller");
 router.post("/register", createUser);
 router.post("/login", loginUser);
 router.post("/checkname", checkUserName);
+router.post("/log-out", verifyUserToken, signAdminOut);
 
 module.exports = router;
 

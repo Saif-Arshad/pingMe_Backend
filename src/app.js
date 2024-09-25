@@ -8,6 +8,7 @@ const port = 3000;
 const app = express();
 const server = http.createServer(app);
 const routes = require("./routes");
+const cloudinary = require('cloudinary');
 
 // make a new instance of Server and pass in the http server instance 
 // And also CORS options
@@ -26,6 +27,7 @@ const routes = require("./routes");
         }
     });
 
+  
 
     app.use(express.json());
     app.use(cors(corsOptionsAll));

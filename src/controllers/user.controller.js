@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { sanitizeObject } = require("../utils/sanitize");
 const { User, UserToken } = require("../../models/User");
-
+const cloudinary = require('../utils/cloudinary')
 // Function to handle error responses
 const handleError = (res, statusCode, message) => {
     return res.status(statusCode).json({ status: statusCode, message });
@@ -11,6 +11,8 @@ const handleError = (res, statusCode, message) => {
 //  Create a new user
 async function createUser(req, res) {
     const data = sanitizeObject(req.body);
+    const { profileImage } = req.body;
+
     console.log("🚀 ~ createUser ~ data:", data)
     if (!data.email || !data.password || !data.userName) {
         return handleError(res, 400, "Please provide email and password");
@@ -28,6 +30,7 @@ async function createUser(req, res) {
             username: data.userName,
             email: data.email,
             password: await bcrypt.hash(data.password, 10),
+            profileImage: profileImage
         });
 
         // Save the new user using async/await
@@ -110,8 +113,48 @@ async function checkUserName(req, res) {
     })
 
 }
+
+async function signAdminOut(req, res) {
+    try {
+        await UserToken.deleteOne({ token: req.token });
+        return res.status(200).json({
+            status: 200,
+            message: "Logged out successfully",
+        })
+
+    } catch (err) {
+        console.error(err);
+        return handleError(res, 500, err.message);
+    }
+}
+//update user Info 
+async function updateUser(req, res) {
+    const data = sanitizeObject(req.body)
+    console.log("🚀 ~ updateUser ~ data:", data)
+    const result = await cloudinary.uploader.upload(data.image, {
+        folder: "user",
+    });
+    const url = cloudinary.url(result.public_id, {
+        transformation: [
+            {
+                quality: "auto",
+                fetch_format: "auto"
+            }, {
+                width: 500,
+                height: 500,
+                crop: "fill",
+                gravity: "auto"
+            }
+        ]
+
+    })
+
+}
+
+
 module.exports = {
     createUser,
     loginUser,
-    checkUserName
+    checkUserName,
+    signAdminOut
 }

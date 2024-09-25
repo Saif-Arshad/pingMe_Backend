@@ -8,16 +8,19 @@ const handleError = (res, statusCode, message) => {
 
 // me route for protected routes
 exports.me = async (req, res) => {
-    const { authorization } = req.headers;
+    const { headers } = await req.body
+    const { authorization } = headers;
     if (!authorization) {
         return handleError(res, 401, "Unauthorized");
     }
     const token = authorization.split(" ")[1];
+    console.log("🚀 ~ exports.me= ~ token:", token)
     const decoded = jwt.verify(token, process.env.SECRET);
     console.log("🚀 ~ exports.me= ~ decoded:", decoded)
     if (decoded.exp && Date.now() >= decoded.exp * 1000) {
         return res.error({ status: 401, message: "Expired token" });
     }
+    ""
     try {
         const user = await User.findById(decoded.id);
         console.log("🚀 ~ exports.me= ~ user:", decoded.id)
