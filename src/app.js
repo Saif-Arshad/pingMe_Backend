@@ -8,7 +8,7 @@ const port = 3000;
 const app = express();
 const server = http.createServer(app);
 const routes = require("./routes");
-const cloudinary = require('cloudinary');
+const { generateContent } = require('./listeners/Ai.listener');
 
 // make a new instance of Server and pass in the http server instance 
 // And also CORS options
@@ -27,17 +27,13 @@ const cloudinary = require('cloudinary');
         }
     });
 
-  
+
 
     app.use(express.json());
     app.use(cors(corsOptionsAll));
     // When a client establishes a connection with the server, 
     // this event listener will be triggered.
     io.on('connection', (socket) => {
-
-        // Log the socket ID of the newly connected client to the console for tracking purposes.
-        console.log(`⚡: ${socket.id} user just connected!`);
-
         // Listen for 'message_send' events from the client. When the client sends a message,
         // the server receives it and logs the message data to the console.
         socket.on('message_send', (data) => {
@@ -48,6 +44,14 @@ const cloudinary = require('cloudinary');
             io.emit('message_receive', data);
         });
 
+        socket.on('generate_content', async (data) => {
+            console.log("🚀 ~ socket.on ~ data:", data)
+            try {
+                await generateContent(socket, data);
+            } catch (error) {
+                socket.emit('error', { message: 'Failed to generate content' });
+            }
+        });
         // Listen for the 'disconnect' event which triggers when a client disconnects.
         // Log a message indicating that a user has disconnected from the server.
         socket.on('disconnect', () => {
