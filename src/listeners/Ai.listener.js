@@ -13,7 +13,6 @@ exports.generateContent = async (socket, data) => {
 
         const result = await model.generateContent(prompt);
         const responseText = result.response.text();
-        console.log(responseText);
         socket.emit('content_generated', {
             isLoading: false,
             response: responseText,
