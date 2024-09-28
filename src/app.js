@@ -9,21 +9,22 @@ const app = express();
 const server = http.createServer(app);
 const routes = require("./routes");
 const { generateContent } = require('./listeners/Ai.listener');
+const Origins = ['https://chatifyme.vercel.app', 'http://localhost:5173'];
 
 // make a new instance of Server and pass in the http server instance 
 // And also CORS options
 (async () => {
     connectToDatabase()
-    const allowedOrigins = "*";
+    const allowedOrigins = Origins;
     const corsOptionsAll = {
-        optionsSuccessStatus: 202,
+        optionsSuccessStatus: 200,
         origin: allowedOrigins,
         credentials: true,
     };
     const io = new Server(server, {
         cors: {
-            origin: "*",
-            // methods: ["GET", "POST"]
+            origin: allowedOrigins,
+            credentials: true,
         }
     });
 
