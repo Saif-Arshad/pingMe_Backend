@@ -5,7 +5,7 @@ const { createUser, loginUser, getUsers, checkUserName, signAdminOut } = require
 router.post("/register", createUser);
 router.post("/login", loginUser);
 router.post("/checkname", checkUserName);
-router.post("/start-chat", verifyUserToken, getUsers)
+router.get("/all-users", verifyUserToken, getUsers)
 router.post("/log-out", verifyUserToken, signAdminOut);
 
 module.exports = router;

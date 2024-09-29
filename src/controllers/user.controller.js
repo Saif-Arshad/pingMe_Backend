@@ -13,33 +13,14 @@ const handleError = (res, statusCode, message) => {
 // getUsers for Chat
 
 async function getUsers(req, res) {
-    const { query } = req.body
     const currentUser = req.user
-    console.log("🚀 ~ getUsers ~ query:", query)
-    if (query == "") {
-        return res.status(200).json({
-            success: false,
-            data: [],
-            message: "Search Your Friends"
-        })
-    }
+
     try {
-        const user = await User.find({
-            $or: [
-                { email: { $regex: `^${query}` } },
-                { username: { $regex: `^${query}` } }
-            ]
-        });
-        if (user.length == 0) {
-            return res.status(200).json({
-                success: false,
-                data: [],
-                message: "no user found with this filter"
-            })
-        }
+        const user = await User.find();
         const allUsers = user.filter((item) => item._id != currentUser.id)
         return res.status(200).json({
-            message: `${allUsers.length} users found`,
+            success: true,
+            message: `fetch all users successfully`,
             data: allUsers
         })
 

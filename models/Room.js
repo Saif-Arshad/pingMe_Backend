@@ -19,11 +19,16 @@ const messageSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    roomId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Room',
-        required: true
-    }
+    status: {
+        type: String,
+        enum: ['sent', 'delivered', 'seen'],
+        default: 'sent'
+    },
+    // roomId: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Room',
+    //     required: true
+    // }
 });
 
 const Message = mongoose.model('Message', messageSchema);
@@ -40,8 +45,16 @@ const roomSchema = new mongoose.Schema({
             ref: 'User',
             required: true
         }
+    ],
+    messages: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Message',
+            required: false
+        }
     ]
 });
+
 
 const Room = mongoose.model('Room', roomSchema);
 
