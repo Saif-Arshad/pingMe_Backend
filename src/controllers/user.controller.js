@@ -8,6 +8,50 @@ const handleError = (res, statusCode, message) => {
     return res.status(statusCode).json({ status: statusCode, message });
 };
 
+
+
+// getUsers for Chat
+
+async function getUsers(req, res) {
+    const { query } = req.body
+    const currentUser = req.user
+    console.log("🚀 ~ getUsers ~ query:", query)
+    if (query == "") {
+        return res.status(200).json({
+            success: false,
+            data: [],
+            message: "Search Your Friends"
+        })
+    }
+    try {
+        const user = await User.find({
+            $or: [
+                { email: { $regex: `^${query}` } },
+                { username: { $regex: `^${query}` } }
+            ]
+        });
+        if (user.length == 0) {
+            return res.status(200).json({
+                success: false,
+                data: [],
+                message: "no user found with this filter"
+            })
+        }
+        const allUsers = user.filter((item) => item._id != currentUser.id)
+        return res.status(200).json({
+            message: `${allUsers.length} users found`,
+            data: allUsers
+        })
+
+    } catch (error) {
+        console.log("🚀 ~ getUsers ~ error:", error)
+        return res.status(500).json({
+            message: "Error in getting User",
+            error: error
+        })
+    }
+}
+
 //  Create a new user
 async function createUser(req, res) {
     const data = sanitizeObject(req.body);
@@ -153,6 +197,7 @@ async function updateUser(req, res) {
 
 
 module.exports = {
+    getUsers,
     createUser,
     loginUser,
     checkUserName,
