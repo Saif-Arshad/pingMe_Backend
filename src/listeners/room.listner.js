@@ -1,22 +1,26 @@
 const { Room } = require("../../models/Room");
-const { User, UserToken } = require("../../models/User");
+const { User } = require("../../models/User");
 
 exports.getOrCreateRoom = async (user1Id, user2Id) => {
     const roomId = [user1Id, user2Id].sort().join('-');
 
+    // Check if the room already exists
     let room = await Room.findOne({ roomId });
+    console.log("🚀 ~ exports.getOrCreateRoom= ~ room:", room)
     if (!room) {
+        // Create a new room
+        console.log("working")
         room = new Room({ roomId, participants: [user1Id, user2Id] });
         await room.save();
-        const users = await User.find({
-            _id: { $in: [user1Id, user2Id] }
-        });
-        users.map(async (user) => {
+
+        // Update users' roomHistory
+        const users = await User.find({ _id: { $in: [user1Id, user2Id] } });
+        await Promise.all(users.map(async (user) => {
             if (!user.roomHistory.includes(room._id)) {
                 user.roomHistory.push(room._id);
-                return user.save();
+                await user.save();
             }
-        });
+        }));
     }
     return room;
 };

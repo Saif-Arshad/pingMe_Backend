@@ -16,7 +16,16 @@ async function getUsers(req, res) {
     const currentUser = req.user
 
     try {
-        const user = await User.find();
+        const user = await User.find()
+        // .populate({
+        //     path: 'roomHistory',
+        //     populate: {
+        //         path: 'messages',
+        //         model: 'Message'
+        //     }
+        // });
+
+
         const allUsers = user.filter((item) => item._id != currentUser.id)
         return res.status(200).json({
             success: true,

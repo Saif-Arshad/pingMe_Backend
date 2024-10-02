@@ -30,10 +30,12 @@ const UserSchema = new mongoose.Schema({
         type: Array,
         default: []
     },
-    roomHistory: {
-        type: Array,
-        default: []
-    },
+    roomHistory: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Room',
+        }
+    ],
     groupHistory: {
         type: Array,
         default: []

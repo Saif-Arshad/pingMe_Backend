@@ -71,8 +71,10 @@ const Origins = ['https://chatifyme.vercel.app', 'http://localhost:5173'];
                 try {
                     const { sender, receiver } = roomId;
                     const room = await getOrCreateRoom(sender, receiver);
+                    console.log("🚀 ~ socket.on ~ room:", room)
                     socket.join(room.roomId);
-                    console.log(`User joined room ${room.roomId}`);
+                    socket.emit("room_joined", room);
+                    // console.log(`User joined room ${room.roomId}`);
                 } catch (error) {
                     console.error("Error in joinRoom:", error);
                     socket.emit('error', { message: 'Failed to join room' });
@@ -96,8 +98,8 @@ const Origins = ['https://chatifyme.vercel.app', 'http://localhost:5173'];
 
                     // Save message to database
                     const newMessage = await saveMessage(sender, receiver, message);
-                    room.messages.push(newMessage._id);
-                    await room.save();
+                    // room.messages.push(newMessage._id);
+                    // await room.save();
 
                     console.log("Message saved and room updated successfully");
                 } catch (error) {

@@ -22,7 +22,21 @@ exports.me = async (req, res) => {
     }
     ""
     try {
-        const user = await User.findById(decoded.id);
+        const user = await User.findById(decoded.id).populate({
+            path: 'roomHistory',
+            model: 'Room',
+            populate: [
+                {
+                    path: 'messages',
+                    model: 'Message'
+                },
+                // {
+                //     path: 'participants',
+                //     model: 'User'
+                // }
+            ]
+        });
+
         console.log("🚀 ~ exports.me= ~ user:", decoded.id)
         if (!user) {
             return handleError(res, 404, "User not found");
