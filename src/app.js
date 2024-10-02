@@ -52,7 +52,6 @@ const Origins = ['https://chatifyme.vercel.app', 'http://localhost:5173'];
                 try {
                     await generateContent(socket, data);
                 } catch (error) {
-                    console.error("Error in generate_content:", error);
                     socket.emit('error', { message: 'Failed to generate content' });
                 }
             });
@@ -71,12 +70,9 @@ const Origins = ['https://chatifyme.vercel.app', 'http://localhost:5173'];
                 try {
                     const { sender, receiver } = roomId;
                     const room = await getOrCreateRoom(sender, receiver);
-                    console.log("🚀 ~ socket.on ~ room:", room)
                     socket.join(room.roomId);
                     socket.emit("room_joined", room);
-                    // console.log(`User joined room ${room.roomId}`);
                 } catch (error) {
-                    console.error("Error in joinRoom:", error);
                     socket.emit('error', { message: 'Failed to join room' });
                 }
             });
@@ -93,17 +89,14 @@ const Origins = ['https://chatifyme.vercel.app', 'http://localhost:5173'];
                         message,
                         timestamp: Date.now(),
                     };
-
                     io.to(room.roomId).emit('newMessage', tempMessage);
 
                     // Save message to database
                     const newMessage = await saveMessage(sender, receiver, message);
-                    // room.messages.push(newMessage._id);
-                    // await room.save();
+                    room.messages.push(newMessage._id);
+                    await room.save();
 
-                    console.log("Message saved and room updated successfully");
                 } catch (error) {
-                    console.error("Error in private_message:", error);
                     socket.emit('error', { message: 'Failed to send message' });
                 }
             });
@@ -113,7 +106,6 @@ const Origins = ['https://chatifyme.vercel.app', 'http://localhost:5173'];
                 if (userId) {
                     delete onlineUsers[userId];
                     io.emit('online_users', Object.keys(onlineUsers));
-                    console.log(`User ${userId} disconnected`);
                 }
             });
         });

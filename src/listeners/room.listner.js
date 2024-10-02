@@ -6,7 +6,6 @@ exports.getOrCreateRoom = async (user1Id, user2Id) => {
 
     // Check if the room already exists
     let room = await Room.findOne({ roomId });
-    console.log("🚀 ~ exports.getOrCreateRoom= ~ room:", room)
     if (!room) {
         // Create a new room
         console.log("working")
