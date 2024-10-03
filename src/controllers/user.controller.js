@@ -165,23 +165,23 @@ async function signAdminOut(req, res) {
 async function updateUser(req, res) {
     const data = sanitizeObject(req.body)
     console.log("🚀 ~ updateUser ~ data:", data)
-    const result = await cloudinary.uploader.upload(data.image, {
-        folder: "user",
-    });
-    const url = cloudinary.url(result.public_id, {
-        transformation: [
-            {
-                quality: "auto",
-                fetch_format: "auto"
-            }, {
-                width: 500,
-                height: 500,
-                crop: "fill",
-                gravity: "auto"
-            }
-        ]
+    // const result = await cloudinary.uploader.upload(data.image, {
+    //     folder: "user",
+    // });
+    // const url = cloudinary.url(result.public_id, {
+    //     transformation: [
+    //         {
+    //             quality: "auto",
+    //             fetch_format: "auto"
+    //         }, {
+    //             width: 500,
+    //             height: 500,
+    //             crop: "fill",
+    //             gravity: "auto"
+    //         }
+    //     ]
 
-    })
+    // })
 
 }
 
@@ -189,6 +189,7 @@ async function updateUser(req, res) {
 module.exports = {
     getUsers,
     createUser,
+    updateUser,
     loginUser,
     checkUserName,
     signAdminOut

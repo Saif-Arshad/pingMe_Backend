@@ -11,10 +11,6 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
-    searchHistory: {
-        type: Array,
-        default: []
-    },
     email: {
         type: String,
         required: true,
@@ -26,7 +22,19 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
+    bannerImage: {
+        type: String,
+        required: false,
+    },
     blockList: {
+        type: Array,
+        default: []
+    },
+    favoriteUsers: {
+        type: Array,
+        default: []
+    },
+    archiveUser: {
         type: Array,
         default: []
     },
@@ -36,10 +44,7 @@ const UserSchema = new mongoose.Schema({
             ref: 'Room',
         }
     ],
-    groupHistory: {
-        type: Array,
-        default: []
-    },
+
     password: {
         type: String,
         required: true,

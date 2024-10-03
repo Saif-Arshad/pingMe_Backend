@@ -19,16 +19,10 @@ const messageSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    status: {
-        type: String,
-        enum: ['sent', 'delivered', 'seen'],
-        default: 'sent'
-    },
-    // roomId: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Room',
-    //     required: true
-    // }
+    isRead: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const Message = mongoose.model('Message', messageSchema);
