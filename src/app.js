@@ -7,6 +7,7 @@ const routes = require("./routes");
 const { generateContent } = require('./listeners/Ai.listener');
 const { chat, saveMessage } = require('./listeners/chat.listener');
 const { getOrCreateRoom } = require('./listeners/room.listner');
+const { deleteAllMessages } = require('./listeners/deleteMessages.listener');
 
 const port = 3000;
 const app = express();
@@ -100,6 +101,12 @@ const Origins = ['https://chatifyme.vercel.app', 'http://localhost:5173'];
                     socket.emit('error', { message: 'Failed to send message' });
                 }
             });
+
+            // Delete User 
+            socket.on('delete-chat', async (data) => {
+                await deleteAllMessages(data, socket)
+            })
+
 
             // Handle disconnect and remove user from online users
             socket.on('disconnect', () => {
