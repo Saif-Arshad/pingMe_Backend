@@ -75,8 +75,6 @@ const Origins = ['https://chatifyme.vercel.app', 'http://localhost:5173'];
                     const room = await getOrCreateRoom(sender, receiver);
                     socket.join(room.roomId);
                     socket.emit("room_joined", room);
-                    console.log("Room joined")
-                    console.log("🚀 ~ socket.on ~ room:", room)
                 } catch (error) {
                     socket.emit('error', { message: 'Failed to join room' });
                 }

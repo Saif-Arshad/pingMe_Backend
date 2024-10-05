@@ -6,7 +6,6 @@ const connectionOptions = {
 };
 
 const dbUri = process.env.MONGO_URI;
-console.log("🚀 ~ dbUri:", dbUri)
 
 const connectToDatabase = async () => {
     try {
