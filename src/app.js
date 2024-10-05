@@ -60,27 +60,64 @@ const Origins = ['https://chatifyme.vercel.app', 'http://localhost:5173'];
             });
 
             // Typing listeners
-            socket.on('user_typing', (data) => {
-                io.emit('user_typing', data);
-            });
+            // socket.on('user_typing', (data) => {
+            //     io.emit('user_typing', data);
+            // });
 
-            socket.on('user_stopped_typing', (data) => {
-                io.emit('user_stopped_typing', data);
-            });
+            // socket.on('user_stopped_typing', (data) => {
+            //     io.emit('user_stopped_typing', data);
+            // });
 
             // Join Room logic
             socket.on('joinRoom', async (roomId) => {
                 try {
                     const { sender, receiver } = roomId;
+
+                    if (!sender || !receiver) {
+                        console.log("Invalid roomId, sender or receiver is undefined:", roomId);
+                        return socket.emit('error', { message: 'Sender or receiver is undefined' });
+                    }
+
                     const room = await getOrCreateRoom(sender, receiver);
+
+                    // Add sender to the room
                     socket.join(room.roomId);
                     socket.emit("room_joined", room);
+
+                    const receiverSocketId = onlineUsers[receiver]; // Get receiver's socket ID
+
+                    if (receiverSocketId) {
+                        io.to(receiverSocketId).emit('roomInvite', { roomId });
+                    } else {
+                        console.log(`Receiver ${receiver} is not connected`);
+                    }
                 } catch (error) {
+                    console.log("🚀 ~ socket.on ~ error:", error);
                     socket.emit('error', { message: 'Failed to join room' });
                 }
             });
 
-            // Message handling
+            socket.on('joinInvite', async (data) => {
+                try {
+                    const { sender, receiver } = data.roomId;
+                    console.log("🚀 ~ socket.on ~ receiver:", receiver)
+                    console.log("🚀 ~ socket.on ~ sender:", sender)
+
+                    //     if (!sender || !receiver) {
+                    //         console.log("Invalid roomId, sender or receiver is undefined:", roomId);
+                    //         return socket.emit('error', { message: 'Sender or receiver is undefined' });
+                    //     }
+
+                    const room = await getOrCreateRoom(sender, receiver);
+                    socket.join(room.roomId);
+                    socket.emit("room_joined", room);
+                } catch (error) {
+                    console.log("🚀 ~ socket.on ~ error:", error);
+                    socket.emit('error', { message: 'Failed to join room' });
+                }
+            });
+
+
             socket.on('private_message', async (data) => {
                 try {
                     const { sender, receiver, message } = data;

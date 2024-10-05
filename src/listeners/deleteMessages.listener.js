@@ -26,7 +26,7 @@ exports.deleteAllMessages = async (id, socket) => {
         }
 
         const deleteResult = await Message.deleteMany({ _id: { $in: room.messages } });
-
+        await deleteResult.save()
         room.messages = [];
 
         await Room.deleteOne({ _id: room._id });
