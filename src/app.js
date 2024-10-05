@@ -8,6 +8,8 @@ const { generateContent } = require('./listeners/Ai.listener');
 const { chat, saveMessage } = require('./listeners/chat.listener');
 const { getOrCreateRoom } = require('./listeners/room.listner');
 const { deleteAllMessages } = require('./listeners/deleteMessages.listener');
+const { blockUser, unBlockUser } = require('./listeners/block.listner');
+const { archiveUsers, unArchiveUsers } = require('./listeners/archive-user.listner');
 
 const port = 3000;
 const app = express();
@@ -73,6 +75,8 @@ const Origins = ['https://chatifyme.vercel.app', 'http://localhost:5173'];
                     const room = await getOrCreateRoom(sender, receiver);
                     socket.join(room.roomId);
                     socket.emit("room_joined", room);
+                    console.log("Room joined")
+                    console.log("🚀 ~ socket.on ~ room:", room)
                 } catch (error) {
                     socket.emit('error', { message: 'Failed to join room' });
                 }
@@ -107,6 +111,18 @@ const Origins = ['https://chatifyme.vercel.app', 'http://localhost:5173'];
                 await deleteAllMessages(data, socket)
             })
 
+            socket.on('block-user', async (data) => {
+                blockUser(data, socket)
+            })
+            socket.on('unBlock-user', async (data) => {
+                unBlockUser(data, socket)
+            })
+            socket.on('archive-user', async (data) => {
+                archiveUsers(data, socket)
+            })
+            socket.on('unArchive-user', async (data) => {
+                unArchiveUsers(data, socket)
+            })
 
             // Handle disconnect and remove user from online users
             socket.on('disconnect', () => {

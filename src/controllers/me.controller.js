@@ -36,8 +36,8 @@ exports.me = async (req, res) => {
                 // }
             ]
         });
+        console.log("🚀 ~ user ~ user:", user)
 
-        console.log("🚀 ~ exports.me= ~ user:", decoded.id)
         if (!user) {
             return handleError(res, 404, "User not found");
         }
