@@ -6,7 +6,7 @@ router.post("/register", createUser);
 router.post("/login", loginUser);
 router.post("/checkname", checkUserName);
 router.get("/all-users", verifyUserToken, getUsers)
-router.put("/:id", verifyUserToken, updateUser)
+router.patch("/:id", verifyUserToken, updateUser)
 router.post("/log-out", verifyUserToken, signAdminOut);
 
 module.exports = router;

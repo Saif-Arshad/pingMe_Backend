@@ -25,14 +25,19 @@ exports.deleteAllMessages = async (id, socket) => {
             return;
         }
 
-        const deleteResult = await Message.deleteMany({ _id: { $in: room.messages } });
-        await deleteResult.save()
+        // Delete all messages in the room
+        await Message.deleteMany({ _id: { $in: room.messages } });
+
+        // Clear the messages array in the room
         room.messages = [];
 
+        // Delete the room itself
         await Room.deleteOne({ _id: room._id });
+
         socket.emit('success', { message: 'Room and all messages deleted successfully' });
 
     } catch (error) {
+        console.log("🚀 ~ exports.deleteAllMessages ~ error:", error);
         socket.emit('error', { message: 'Error deleting messages and room history', error });
     }
 };

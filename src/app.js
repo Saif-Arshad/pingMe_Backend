@@ -84,7 +84,7 @@ const Origins = ['https://chatifyme.vercel.app', 'http://localhost:5173'];
                     socket.join(room.roomId);
                     socket.emit("room_joined", room);
 
-                    const receiverSocketId = onlineUsers[receiver]; // Get receiver's socket ID
+                    const receiverSocketId = onlineUsers[receiver];
 
                     if (receiverSocketId) {
                         io.to(receiverSocketId).emit('roomInvite', { roomId });
@@ -147,10 +147,26 @@ const Origins = ['https://chatifyme.vercel.app', 'http://localhost:5173'];
             })
 
             socket.on('block-user', async (data) => {
+                const { currentUserId, userId } = data;
+
                 blockUser(data, socket)
+
+                const receiverSocketId = onlineUsers[userId];
+
+                if (receiverSocketId) {
+                    io.to(receiverSocketId).emit('block', { currentUserId });
+                }
+
+
             })
             socket.on('unBlock-user', async (data) => {
+                const { currentUserId, userId } = data;
                 unBlockUser(data, socket)
+                const receiverSocketId = onlineUsers[userId];
+
+                if (receiverSocketId) {
+                    io.to(receiverSocketId).emit('unBlock', { currentUserId });
+                }
             })
             socket.on('archive-user', async (data) => {
                 archiveUsers(data, socket)

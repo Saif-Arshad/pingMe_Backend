@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const { sanitizeObject } = require("../utils/sanitize");
 const { User, UserToken } = require("../../models/User");
 const cloudinary = require('../utils/cloudinary')
+const formidable = require('formidable');
+
 // Function to handle error responses
 const handleError = (res, statusCode, message) => {
     return res.status(statusCode).json({ status: statusCode, message });
@@ -154,28 +156,95 @@ async function signAdminOut(req, res) {
         return handleError(res, 500, err.message);
     }
 }
-//update user Info 
-async function updateUser(req, res) {
-    const data = sanitizeObject(req.body)
-    // const result = await cloudinary.uploader.upload(data.image, {
-    //     folder: "user",
-    // });
-    // const url = cloudinary.url(result.public_id, {
-    //     transformation: [
-    //         {
-    //             quality: "auto",
-    //             fetch_format: "auto"
-    //         }, {
-    //             width: 500,
-    //             height: 500,
-    //             crop: "fill",
-    //             gravity: "auto"
-    //         }
-    //     ]
-
-    // })
-
+async function uploadToCloudinary(filePath, options, maxRetries = 3) {
+    let attempts = 0;
+    while (attempts < maxRetries) {
+        try {
+            const result = await cloudinary.uploader.upload(filePath, {
+                ...options,
+                timeout: 60000,
+            }
+            );
+            return result;
+        } catch (error) {
+            console.error(`Cloudinary upload attempt ${attempts + 1} failed:`, error);
+            attempts += 1;
+            if (attempts >= maxRetries) {
+                throw error; // Throw the error if max retries reached
+            }
+        }
+    }
 }
+
+async function updateUser(req, res) {
+    const form = new formidable.IncomingForm();
+    form.keepExtensions = true;
+
+    form.parse(req, async (err, fields, files) => {
+        if (err) {
+            console.error("Error parsing form data:", err);
+            return handleError(res, 500, "Failed to parse form data.");
+        }
+
+        try {
+            const updatedFields = { ...fields }; // Contains text fields like profileName
+
+            // Ensure profileName is a string if it exists
+            if (Array.isArray(updatedFields.profileName)) {
+                updatedFields.profileName = updatedFields.profileName[0];
+            }
+
+            // Check if bannerImage file is present
+            if (files.bannerImage && Array.isArray(files.bannerImage) && files.bannerImage.length > 0) {
+                console.log("Uploading banner image to Cloudinary...");
+                try {
+                    const result = await uploadToCloudinary(files.bannerImage[0].filepath, {
+                        folder: 'user',
+                        transformation: [{ quality: 'auto', fetch_format: 'auto' }],
+                    });
+                    updatedFields.bannerImage = result.secure_url;
+                } catch (error) {
+                    console.error("Error uploading banner image to Cloudinary:", error);
+                    return handleError(res, 500, "Failed to upload banner image.");
+                }
+            }
+
+            // Check if profileImage file is present
+            if (files.profileImage && Array.isArray(files.profileImage) && files.profileImage.length > 0) {
+                console.log("Uploading profile image to Cloudinary...");
+                try {
+                    const result = await uploadToCloudinary(files.profileImage[0].filepath, {
+                        folder: 'user',
+                        transformation: [{ quality: 'auto', fetch_format: 'auto' }],
+                    });
+                    updatedFields.profileImage = result.secure_url;
+                } catch (error) {
+                    console.error("Error uploading profile image to Cloudinary:", error);
+                    return handleError(res, 500, "Failed to upload profile image.");
+                }
+            }
+
+            // Update the user information in the database
+            const updatedUser = await User.findByIdAndUpdate(req.user.id, updatedFields, { new: true });
+
+            if (!updatedUser) {
+                return handleError(res, 404, "User not found.");
+            }
+
+            return res.status(200).json({
+                success: true,
+                message: "Profile updated successfully",
+                data: updatedUser,
+            });
+        } catch (error) {
+            console.error("Error updating user profile:", error);
+            return handleError(res, 500, "Failed to update profile.");
+        }
+    });
+}
+
+
+
 
 
 module.exports = {
