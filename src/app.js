@@ -10,7 +10,7 @@ const { getOrCreateRoom } = require('./listeners/room.listner');
 const { deleteAllMessages } = require('./listeners/deleteMessages.listener');
 const { blockUser, unBlockUser } = require('./listeners/block.listner');
 const { archiveUsers, unArchiveUsers } = require('./listeners/archive-user.listner');
-
+const { Message } = require("./../models/Room")
 const port = 3000;
 const app = express();
 const server = http.createServer(app);
@@ -174,6 +174,18 @@ const Origins = ['https://chatifyme.vercel.app', 'http://localhost:5173'];
             socket.on('unArchive-user', async (data) => {
                 unArchiveUsers(data, socket)
             })
+            socket.on('markMessagesAsRead', async ({ conversationId, userId }) => {
+                try {
+                    await Message.updateMany(
+                        { sender: conversationId, receiver: userId, isRead: false },
+                        { $set: { isRead: true } }
+                    );
+
+                    // io.to(conversationId).emit('messagesRead', { conversationId, userId });
+                } catch (error) {
+                    console.error('Error updating message status:', error);
+                }
+            });
 
             // Handle disconnect and remove user from online users
             socket.on('disconnect', () => {
