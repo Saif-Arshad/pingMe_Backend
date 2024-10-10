@@ -14,7 +14,7 @@ const { Message } = require("./../models/Room")
 const port = 3000;
 const app = express();
 const server = http.createServer(app);
-const Origins = ['https://chatifyme.vercel.app', 'http://localhost:5173'];
+const Origins = ['https://pingmepro.vercel.app', 'http://localhost:5173'];
 
 (async () => {
     try {
