@@ -33,7 +33,7 @@ const Origins = ['https://pingmepro.vercel.app', 'http://localhost:5173'];
                 origin: allowedOrigins,
                 credentials: true,
             }
-        });
+        }, addTrailingSlash: false);
 
         app.use(express.json());
         app.use(cors(corsOptionsAll));
