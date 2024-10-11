@@ -11,7 +11,7 @@ const { deleteAllMessages } = require('./listeners/deleteMessages.listener');
 const { blockUser, unBlockUser } = require('./listeners/block.listner');
 const { archiveUsers, unArchiveUsers } = require('./listeners/archive-user.listner');
 const { Message } = require("./../models/Room")
-const port = 3000;
+const port = 8000;
 const app = express();
 const server = http.createServer(app);
 const Origins = ['https://pingmepro.vercel.app', 'http://localhost:5173'];
@@ -33,9 +33,9 @@ const Origins = ['https://pingmepro.vercel.app', 'http://localhost:5173'];
                 origin: allowedOrigins,
                 credentials: true,
             }
-        , addTrailingSlash: false
-    }
-);
+            , addTrailingSlash: false
+        }
+        );
         app.use(express.json());
         app.use(cors(corsOptionsAll));
 
