@@ -18,7 +18,6 @@ const Origins = ['https://pingmepro.vercel.app', 'http://localhost:5173'];
 
 (async () => {
     try {
-        // Ensure the database connection is established before starting the server
         await connectToDatabase();
 
         const allowedOrigins = Origins;
@@ -75,7 +74,6 @@ const Origins = ['https://pingmepro.vercel.app', 'http://localhost:5173'];
                     const { sender, receiver } = roomId;
 
                     if (!sender || !receiver) {
-                        console.log("Invalid roomId, sender or receiver is undefined:", roomId);
                         return socket.emit('error', { message: 'Sender or receiver is undefined' });
                     }
 
@@ -93,7 +91,6 @@ const Origins = ['https://pingmepro.vercel.app', 'http://localhost:5173'];
                         console.log(`Receiver ${receiver} is not connected`);
                     }
                 } catch (error) {
-                    console.log("🚀 ~ socket.on ~ error:", error);
                     socket.emit('error', { message: 'Failed to join room' });
                 }
             });
@@ -113,7 +110,6 @@ const Origins = ['https://pingmepro.vercel.app', 'http://localhost:5173'];
                     socket.join(room.roomId);
                     socket.emit("room_joined", room);
                 } catch (error) {
-                    console.log("🚀 ~ socket.on ~ error:", error);
                     socket.emit('error', { message: 'Failed to join room' });
                 }
             });
@@ -155,7 +151,7 @@ const Origins = ['https://pingmepro.vercel.app', 'http://localhost:5173'];
                 const receiverSocketId = onlineUsers[userId];
 
                 if (receiverSocketId) {
-                    io.to(receiverSocketId).emit('block', { currentUserId });
+                    io.to(receiverSocketId).emit('block', data);
                 }
 
 
@@ -166,7 +162,7 @@ const Origins = ['https://pingmepro.vercel.app', 'http://localhost:5173'];
                 const receiverSocketId = onlineUsers[userId];
 
                 if (receiverSocketId) {
-                    io.to(receiverSocketId).emit('unBlock', { currentUserId });
+                    io.to(receiverSocketId).emit('unBlock', data);
                 }
             })
             socket.on('archive-user', async (data) => {
