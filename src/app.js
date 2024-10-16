@@ -81,6 +81,7 @@ const Origins = ['https://pingmepro.vercel.app', 'http://localhost:5173'];
 
                     // Add sender to the room
                     socket.join(room.roomId);
+                    // console.log("room joined", roomId)
                     socket.emit("room_joined", room);
 
                     const receiverSocketId = onlineUsers[receiver];
