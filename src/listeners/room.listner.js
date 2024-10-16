@@ -6,6 +6,7 @@ exports.getOrCreateRoom = async (user1Id, user2Id) => {
         const roomId = [user1Id, user2Id].sort().join('-');
 
         let room = await Room.findOne({ roomId });
+        console.log("🚀 ~ exports.getOrCreateRoom= ~ room:", room)
 
         if (!room) {
             room = new Room({ roomId, participants: [user1Id, user2Id] });

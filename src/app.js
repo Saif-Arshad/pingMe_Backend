@@ -76,12 +76,13 @@ const Origins = ['https://pingmepro.vercel.app', 'http://localhost:5173'];
                     if (!sender || !receiver) {
                         return socket.emit('error', { message: 'Sender or receiver is undefined' });
                     }
-
+                    console.log(roomId)
                     const room = await getOrCreateRoom(sender, receiver);
+                    console.log("🚀 ~ socket.on ~ room:", room)
 
                     // Add sender to the room
                     socket.join(room.roomId);
-                    // console.log("room joined", roomId)
+                    console.log("room joined", roomId)
                     socket.emit("room_joined", room);
 
                     const receiverSocketId = onlineUsers[receiver];
