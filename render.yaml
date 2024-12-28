@@ -1,0 +1,20 @@
+services:
+  - name: your-service-name
+    type: web
+    env: node
+    plan: free 
+    buildCommand: "npm install"
+    startCommand: "node src/app.js"
+    envVars:
+      - key: CLOUDNAIRY_API_KEY
+        value: "371493281328837"
+      - key: CLOUDNAIRY_API_SECRET
+        value: "kVwqi2ludljQZCRtHxnaQXLV0vM"
+      - key: CLOUDNAIRY_CLOUD_NAME
+        value: "di6r722sv"
+      - key: GOOGLE_API_KEY
+        value: "AIzaSyANt5hoxnB21FyXmGxHqKIPd8-Btrvd19c"
+      - key: MONGO_URI
+        value: "mongodb+srv://Allinone:zjid6CkSpwARTQjK@cluster0.4xz74tr.mongodb.net/PingMe"
+      - key: SECRET
+        value: "vasdvasd"
